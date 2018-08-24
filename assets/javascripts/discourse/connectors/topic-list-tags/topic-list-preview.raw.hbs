@@ -10,3 +10,10 @@
   {{/if}}
   {{raw "list/topic-excerpt" topic=context.topic}}
 {{/unless}}
+{{#unless controller.hideCategory}}
+  {{#unless topic.isPinnedUncategorized}}
+    <div class='topic-category'>
+      {{category-link context.topic.category}}
+    </div>
+  {{/unless}}
+{{/unless}}
