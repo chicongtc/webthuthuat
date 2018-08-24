@@ -1,58 +1,53 @@
-# name: discourse-topic-previews
-# about: A Discourse plugin that gives you a topic preview image in the topic list
-# version: 0.1
+# name: discourse-topic-list-previews
+# about: Allows you to add topic previews and other topic features to topic lists
+# version: 0.4
 # authors: Angus McLeod
+# url: https://github.com/angusmcleod/discourse-topic-previews
 
-register_asset 'stylesheets/previews.scss'
+register_asset 'stylesheets/previews_common.scss'
+register_asset 'stylesheets/previews_mobile.scss'
+
+enabled_site_setting :topic_list_previews_enabled
 
 after_initialize do
+  Topic.register_custom_field_type('thumbnails', :json)
+  Category.register_custom_field_type('thumbnail_width', :integer)
+  Category.register_custom_field_type('thumbnail_height', :integer)
+  Category.register_custom_field_type('topic_list_featured_images', :boolean)
+  SiteSetting.create_thumbnails = true
 
-  Category.register_custom_field_type('list_thumbnails', :boolean)
-  Category.register_custom_field_type('list_excerpts', :boolean)
-
-  require 'listable_topic_serializer'
-  class ::ListableTopicSerializer
-
-    def excerpt
-      accepted_id = object.custom_fields["accepted_answer_post_id"].to_i
-      if accepted_id > 0
-        cooked = Post.where(id: accepted_id).pluck('cooked')
-        excerpt = PrettyText.excerpt(cooked[0], 300, {})
-      else
-        excerpt = object.excerpt
-      end
-      excerpt.gsub!(/(\[#{I18n.t 'excerpt_image'}\])/, "") if excerpt
-      excerpt
-    end
-
-  end
-
-  require 'topic_list_item_serializer'
-  class ::TopicListItemSerializer
-    attributes :show_thumbnail
-
-    def show_thumbnail
-      object.category && object.category.custom_fields["list_thumbnails"] && !!object.image_url
-    end
-
-    def include_excerpt?
-      object.category && object.category.custom_fields["list_excerpts"] && !!object.excerpt
+  @nil_thumbs = TopicCustomField.where(name: 'thumbnails', value: nil)
+  if @nil_thumbs.length
+    @nil_thumbs.each do |thumb|
+      hash = { normal: '', retina: '' }
+      thumb.value = ::JSON.generate(hash)
+      thumb.save!
     end
   end
 
-  require 'basic_category_serializer'
-  class ::BasicCategorySerializer
-    attributes :list_thumbnails, :list_excerpts
-
-    def list_thumbnails
-      object.custom_fields["list_thumbnails"]
-    end
-
-    def list_excerpts
-      object.custom_fields["list_excerpts"]
-    end
-  end
+  load File.expand_path('../lib/topic_list_previews_helper.rb', __FILE__)
+  load File.expand_path('../lib/guardian_edits.rb', __FILE__)
+  load File.expand_path('../lib/featured_topics.rb', __FILE__)
+  load File.expand_path('../lib/topic_list_edits.rb', __FILE__)
+  load File.expand_path('../lib/cooked_post_processor_edits.rb', __FILE__)
+  load File.expand_path('../serializers/topic_list_item_edits.rb', __FILE__)
 
   TopicList.preloaded_custom_fields << "accepted_answer_post_id" if TopicList.respond_to? :preloaded_custom_fields
-  add_to_serializer(:suggested_topic, :is_suggested) {true}
+  TopicList.preloaded_custom_fields << "thumbnails" if TopicList.respond_to? :preloaded_custom_fields
+
+  DiscourseEvent.on(:accepted_solution) do |post|
+    if post.image_url && SiteSetting.topic_list_previews_enabled
+      ListHelper.create_topic_thumbnails(post, post.image_url)
+    end
+  end
+
+  add_to_serializer(:basic_category, :topic_list_social) { object.custom_fields["topic_list_social"] }
+  add_to_serializer(:basic_category, :topic_list_excerpt) { object.custom_fields["topic_list_excerpt"] }
+  add_to_serializer(:basic_category, :topic_list_thumbnail) { object.custom_fields["topic_list_thumbnail"] }
+  add_to_serializer(:basic_category, :topic_list_action) { object.custom_fields["topic_list_action"] }
+  add_to_serializer(:basic_category, :topic_list_category_badge_move) { object.custom_fields["topic_list_category_badge_move"] }
+  add_to_serializer(:basic_category, :topic_list_default_thumbnail) { object.custom_fields["topic_list_default_thumbnail"] }
+  add_to_serializer(:basic_category, :topic_list_thumbnail_width) { object.custom_fields['topic_list_thumbnail_width'] }
+  add_to_serializer(:basic_category, :topic_list_thumbnail_height) { object.custom_fields['topic_list_thumbnail_height'] }
+  add_to_serializer(:basic_category, :topic_list_featured_images) { object.custom_fields['topic_list_featured_images'] }
 end

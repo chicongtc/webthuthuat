@@ -1,9 +1,12 @@
 {{#unless context.topic.is_suggested}}
-  {{#unless context.site.mobileView}}
-    {{#if context.topic.show_thumbnail}}
+  {{#if context.topic.image_url}}
+    {{#if context.site.mobileView}}
+      mobile view code
+    {{else}}
       <div class="topic-preview">
         {{preview-unbound context.topic.image_url}}
       </div>
     {{/if}}
-  {{/unless}}
+  {{/if}}
+  {{raw "list/topic-excerpt" topic=context.topic}}
 {{/unless}}
