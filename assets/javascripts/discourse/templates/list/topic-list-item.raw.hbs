@@ -19,7 +19,11 @@
       {{/if}}
       {{discourse-tags topic mode="list"}}
     {{/unless}}
-
+{{#unless hideCategory}}
+  {{#unless topic.isPinnedUncategorized}}
+    {{raw "list/category-column" category=topic.category}}
+  {{/unless}}
+{{/unless}}
     {{#if expandPinned}}
       {{raw "list/topic-excerpt" topic=topic}}
     {{/if}}
@@ -43,13 +47,6 @@
     </div>
   {{/if}}
 </td>
-
-{{#unless hideCategory}}
-  {{#unless topic.isPinnedUncategorized}}
-    {{raw "list/category-column" category=topic.category}}
-  {{/unless}}
-{{/unless}}
-
 {{#if showPosters}}
   {{raw "list/posters-column" posters=topic.posters}}
 {{/if}}
