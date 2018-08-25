@@ -1,9 +1,13 @@
 .topic-list .main-link a.title {
-  padding: 0;
-  display: block;
+color:#0f587f;
+font-weight:600;
+text-align:center;
+display:block;
+font-size: 1.8em;
+margin-left:10px;
 }
 
-.topic-preview {
+.topic-details {
   float: left;
   padding-right: 15px;
   .thumbnail {
@@ -15,14 +19,14 @@
   }
 }
 
-.topic-category {
+.topic-details .topic-category {
   display: inline-block;
   .badge-wrapper {
     font-size: 12px;
   }
 }
 
-.topic-list .topic-excerpt {
+.topic-details .topic-excerpt {
   margin-top: 2px;
   padding-right: 10px;
   overflow: hidden;
