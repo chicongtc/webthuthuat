@@ -7,18 +7,24 @@ font-size: 1.8em;
 margin-left:10px;
 }
 
-.topic-details {
-  float: left;
-  padding-right: 15px;
-  .thumbnail {
-    height: 100px;
-    width: 100px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-  }
+.topic-thumbnail {
+    min-width: 100px !important;
+    min-height: 100px !important;
+    text-align: center;
+    width: 105px;
+    display: flex;
+    align-items: center;
 }
-
+.topic-details {
+    max-height: none !important;
+    padding-left: 10px;
+    overflow: hidden;
+    display: block;
+}
+.topic-thumbnail .topic-details {
+    margin-left: 105px;
+    border-left: 1px solid #e5e5e5;
+}
 .topic-details .topic-category {
   display: inline-block;
   .badge-wrapper {
