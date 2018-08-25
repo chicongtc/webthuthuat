@@ -28,6 +28,7 @@
       {{raw 'list/topic-meta' likesHeat=likesHeat title=view.title topic=topic}}
       {{raw-plugin-outlet name="topic-list-after-title"}}
     </div>
+	{{/if}}
     {{#if expandPinned}}
       {{raw "list/topic-excerpt" topic=topic}}
     {{/if}}
@@ -40,8 +41,6 @@
       {{raw "list/action-list" topic=topic postNumbers=topic.liked_post_numbers className="likes" icon="heart"}}
     {{/unless}}
   </div>
- 
-  {{/if}}
 </td>
 
 {{#unless hideCategory}}
