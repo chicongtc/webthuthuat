@@ -5,13 +5,13 @@
 {{/if}}
 
 <td class='main-link clearfix' colspan="{{titleColSpan}}">
-  {{#if socialStyle}}
-    {{raw "list/topic-list-title" topic=topic socialStyle=socialStyle showTopicPostBadges=showTopicPostBadges}}
-  {{/if}}
   {{#if showThumbnail}}
     {{raw "list/topic-thumbnail" topic=topic thumbnails=thumbnails category=category}}
   {{/if}}
   <div class="topic-details">
+    {{#if socialStyle}}
+    {{raw "list/topic-list-title" topic=topic socialStyle=socialStyle showTopicPostBadges=showTopicPostBadges}}
+  {{/if}}
     {{#unless socialStyle}}
       {{raw "list/topic-list-title" topic=topic showTopicPostBadges=showTopicPostBadges}}
       {{#if showCategoryBadge}}
