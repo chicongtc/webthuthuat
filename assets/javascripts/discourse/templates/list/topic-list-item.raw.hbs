@@ -5,13 +5,16 @@
 {{/if}}
 
 <td class='main-link clearfix' colspan="{{titleColSpan}}">
+
   {{#if showThumbnail}}
     {{raw "list/topic-thumbnail" topic=topic thumbnails=thumbnails category=category}}
   {{/if}}
+  
   <div class="topic-details">
+  
     {{#if socialStyle}}
     {{raw "list/topic-list-title" topic=topic socialStyle=socialStyle showTopicPostBadges=showTopicPostBadges}}
-  {{/if}}
+	{{/if}}
     {{#unless socialStyle}}
       {{raw "list/topic-list-title" topic=topic showTopicPostBadges=showTopicPostBadges}}
       {{#if showCategoryBadge}}
@@ -19,7 +22,13 @@
       {{/if}}
       {{discourse-tags topic mode="list"}}
     {{/unless}}
-
+	
+	{{#unless hideCategory}}
+		{{#unless topic.isPinnedUncategorized}}
+		{{raw "list/category-column" category=topic.category}}
+	{{/unless}}
+	
+	{{/unless}}
     {{#if expandPinned}}
       {{raw "list/topic-excerpt" topic=topic}}
     {{/if}}
@@ -32,7 +41,6 @@
       {{raw "list/action-list" topic=topic postNumbers=topic.liked_post_numbers className="likes" icon="heart"}}
     {{/unless}}
   </div>
-
   {{#if socialStyle}}
     <div class="social-footer">
       {{#if showActions}}
@@ -43,12 +51,6 @@
     </div>
   {{/if}}
 </td>
-
-{{#unless hideCategory}}
-  {{#unless topic.isPinnedUncategorized}}
-    {{raw "list/category-column" category=topic.category}}
-  {{/unless}}
-{{/unless}}
 
 {{#if showPosters}}
   {{raw "list/posters-column" posters=topic.posters}}
