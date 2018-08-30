@@ -1,5 +1,5 @@
 <div class="topic-title">
-  <span class='link-top-line'>
+  <h2 class='link-top-line'>
     {{raw-plugin-outlet name="topic-list-before-status"}}
     {{raw "topic-status" topic=topic}}
     {{topic-link topic}}
@@ -18,7 +18,7 @@
     {{#unless socialStyle}}
       {{raw-plugin-outlet name="topic-list-after-title"}}
     {{/unless}}
-  </span>
+  </h2>
   {{#if socialStyle}}
     {{raw "list/topic-users" topic=topic posterNames=posterNames}}
   {{/if}}
